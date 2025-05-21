@@ -1,12 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/store/store';
-import { selectChat } from '@/store/chatSlice';
+import { RootState } from '@/lib/store';
 import Avatar from './Avatar';
 import { FolderPlusIcon, MagnifyingGlassIcon, FunnelIcon } from '@heroicons/react/24/outline';
 
 export default function ChatList() {
   const dispatch = useDispatch();
-  const { chats, selectedChatId } = useSelector((state: RootState) => state.chat);
+  const { messages, isLoading, error } = useSelector((state: RootState) => state.chat);
 
   return (
     <div className="h-full border-r border-gray-200 bg-white flex flex-col">
@@ -40,22 +39,19 @@ export default function ChatList() {
         </div>
       </div>
       <div className="flex-1 overflow-y-auto">
-        {chats.map((chat) => (
-          <button
-            key={chat.id}
-            onClick={() => dispatch(selectChat(chat.id))}
-            className={`w-full p-3 flex items-center space-x-3 hover:bg-gray-50 transition-colors ${
-              selectedChatId === chat.id ? 'bg-gray-50' : ''
-            }`}
+        {messages.map((message) => (
+          <div
+            key={message.id}
+            className="w-full p-3 flex items-center space-x-3 hover:bg-gray-50 transition-colors"
           >
-            <Avatar name={chat.name} size="lg" />
+            <Avatar name={message.role} size="lg" />
             <div className="flex-1 text-left">
-              <h3 className="font-bold text-black text-sm">{chat.name}</h3>
+              <h3 className="font-bold text-black text-sm">{message.role}</h3>
               <p className="text-xs text-black truncate">
-                {chat.messages[chat.messages.length - 1]?.content || 'No messages yet'}
+                {message.content}
               </p>
             </div>
-          </button>
+          </div>
         ))}
       </div>
     </div>

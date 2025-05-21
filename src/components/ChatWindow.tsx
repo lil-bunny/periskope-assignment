@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from '@/store/store';
-import { addMessage } from '@/store/chatSlice';
+import { RootState } from '@/lib/store';
+import { addMessage } from '@/lib/features/chatSlice';
 import { useState } from 'react';
 import Avatar from './Avatar';
 import { PaperClipIcon, FaceSmileIcon, ClockIcon, StarIcon, MicrophoneIcon } from '@heroicons/react/24/outline';
@@ -8,18 +8,8 @@ import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
 
 export default function ChatWindow() {
   const dispatch = useDispatch();
-  const { chats, selectedChatId } = useSelector((state: RootState) => state.chat);
+  const { messages, isLoading, error } = useSelector((state: RootState) => state.chat);
   const [newMessage, setNewMessage] = useState('');
-
-  const selectedChat = chats.find((chat) => chat.id === selectedChatId);
-
-  if (!selectedChat) {
-    return (
-      <div className="flex-1 flex items-center justify-center bg-gray-50">
-        <p className="text-gray-500">Select a chat to start messaging</p>
-      </div>
-    );
-  }
 
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,13 +17,10 @@ export default function ChatWindow() {
 
     dispatch(
       addMessage({
-        chatId: selectedChat.id,
-        message: {
-          id: Date.now().toString(),
-          content: newMessage,
-          senderId: 'me',
-          timestamp: new Date(),
-        },
+        id: Date.now().toString(),
+        content: newMessage,
+        role: 'user',
+        timestamp: Date.now(),
       })
     );
     setNewMessage('');
@@ -42,8 +29,8 @@ export default function ChatWindow() {
   return (
     <div className="h-full flex flex-col">
       <div className="p-2 bg-white border-b border-gray-200 flex items-center space-x-2">
-        <Avatar name={selectedChat?.name} size="sm" />
-        <h2 className="text-sm font-bold text-black">{selectedChat?.name}</h2>
+        <Avatar name="Assistant" size="sm" />
+        <h2 className="text-sm font-bold text-black">Assistant</h2>
       </div>
       <div className="flex-1 p-4 space-y-4" style={{
         backgroundImage: 'url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png")',
@@ -51,14 +38,14 @@ export default function ChatWindow() {
         backgroundSize: '410px',
         backgroundAttachment: 'fixed'
       }}>
-        {selectedChat?.messages.map((message, index) => (
+        {messages.map((message) => (
           <div
-            key={index}
-            className={`flex ${message.senderId === 'me' ? 'justify-end' : 'justify-start'}`}
+            key={message.id}
+            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
               className={`max-w-[70%] rounded-lg p-3 ${
-                message.senderId === 'me'
+                message.role === 'user'
                   ? 'bg-green-100 text-black'
                   : 'bg-white text-black'
               }`}

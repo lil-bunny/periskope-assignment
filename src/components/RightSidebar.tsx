@@ -2,7 +2,7 @@ import { HomeIcon, ChatBubbleLeftIcon, TicketIcon, ChartBarIcon } from '@heroico
 
 export default function RightSidebar() {
   return (
-    <div className="w-[3%] h-screen border-l border-gray-200 bg-white flex flex-col items-center py-4 space-y-6">
+    <div className="w-20 h-screen border-l border-gray-200 bg-white flex flex-col items-center py-4 space-y-6">
       <button className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors">
         <HomeIcon className="w-5 h-5" />
       </button>
