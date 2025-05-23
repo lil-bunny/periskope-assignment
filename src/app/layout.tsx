@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Periskope Clone",
-  description: "A clone of Periskope chat application",
+  description: "A modern chat application",
 };
 
 export default function RootLayout({

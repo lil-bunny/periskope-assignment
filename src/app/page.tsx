@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { userHelpers } from '@/lib/supabase-helpers';
 import ChatList from '@/components/ChatList';
 import ChatWindow from '@/components/ChatWindow';
 import RightSidebar from '@/components/RightSidebar';
@@ -11,6 +12,7 @@ import Sidebar from '@/components/Sidebar';
 
 export default function Home() {
   const [user, setUser] = useState<any>(null);
+  const [userDetails, setUserDetails] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const supabase = createClientComponentClient();
@@ -23,9 +25,21 @@ export default function Home() {
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!mounted) return;
-        console.log("session", session)
+        console.log("🔵 Current Session:", session);
+        
         if (session) {
           setUser(session.user);
+          // Get and log user details from users table
+          try {
+            const details = await userHelpers.storeUserDetails();
+            if (mounted) {
+              console.log("✅ User Details from Database:", details);
+              setUserDetails(details);
+            }
+          } catch (error) {
+            console.error("❌ Error getting user details:", error);
+            // Don't redirect on this error, as the session is still valid
+          }
         } else {
           router.replace('/auth');
         }
@@ -49,8 +63,21 @@ export default function Home() {
 
       if (session) {
         setUser(session.user);
+        // Get and log user details when auth state changes
+        userHelpers.storeUserDetails()
+          .then(details => {
+            if (mounted) {
+              console.log("✅ User Details after Auth Change:", details);
+              setUserDetails(details);
+            }
+          })
+          .catch(error => {
+            console.error("❌ Error getting user details after auth change:", error);
+            // Don't redirect on this error
+          });
       } else {
         setUser(null);
+        setUserDetails(null);
         router.replace('/auth');
       }
     });
@@ -69,7 +96,7 @@ export default function Home() {
     );
   }
 
-  if (!user) {
+  if (!user || !userDetails) {
     return null; // Let the router handle the redirect
   }
 
@@ -79,9 +106,9 @@ export default function Home() {
         <TopBar />
         <div className="flex-1 flex overflow-hidden">
           <Sidebar/>
-          <ChatList />
+          <ChatList currentUserId={userDetails.id} />
           <div className="flex-1">
-            <ChatWindow />
+            <ChatWindow currentUserId={userDetails.id} />
           </div>
           <RightSidebar />
         </div>

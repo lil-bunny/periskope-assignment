@@ -56,7 +56,14 @@ export default function Auth() {
     <div className="flex h-screen items-center justify-center bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
         <div className="text-center">
-          <h1 className="text-2xl font-bold">Welcome</h1>
+          <div className="flex justify-center mb-4">
+            <img 
+              src="https://media.licdn.com/dms/image/v2/D4E0BAQEi-Cj3qTHuAg/company-logo_200_200/company-logo_200_200/0/1692600818066?e=2147483647&v=beta&t=3wx49OFHJagynkawPHEG1a8NkmC8k4pUNeCZyXGTuRY"
+              alt="Periskope Logo"
+              className="w-20 h-20 rounded-full object-cover"
+            />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900">Periskope App</h1>
           <p className="mt-2 text-gray-600">Sign in with your email</p>
         </div>
 
@@ -71,7 +78,7 @@ export default function Auth() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-0 focus:border-gray-300"
               placeholder="Enter your email"
             />
           </div>
@@ -79,7 +86,7 @@ export default function Auth() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+            className="w-full px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
           >
             {loading ? 'Sending...' : 'Send Magic Link'}
           </button>

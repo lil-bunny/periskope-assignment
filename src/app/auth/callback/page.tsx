@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { userHelpers } from '@/lib/supabase-helpers';
 
 export default function AuthCallback() {
   const router = useRouter();
@@ -54,6 +55,15 @@ export default function AuthCallback() {
         }
 
         console.log('✅ Callback: Session set successfully:', sessionData.session.user.email);
+
+        // Store user details in the users table
+        try {
+          const userDetails = await userHelpers.storeUserDetails();
+          console.log('✅ Callback: User details stored:', userDetails);
+        } catch (error) {
+          console.error('❌ Callback: Error storing user details:', error);
+          // Don't throw here, as the session is still valid
+        }
 
         // Clear the URL parameters to prevent issues
         window.history.replaceState(null, '', window.location.pathname);
